@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.db.queries import add_locations_to_db
+from app.preprocessing.parser import parse_raw_data
 from app.routers import routes
-from app.db import supabase
+from app.db.client import supabase
 
 
 app = FastAPI()
@@ -26,3 +28,10 @@ async def test_supabase():
     
     print(response)
     return {"data": response.data}
+
+@app.put("/locations")
+async def locations():
+    locations = parse_raw_data()
+    response = add_locations_to_db(locations)
+    return response
+   
